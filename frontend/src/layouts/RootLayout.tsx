@@ -1,8 +1,9 @@
 import {Outlet} from "react-router-dom"
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { Box, CssBaseline, Container } from '@mui/material'
-import Navbar from "../components/Navbar"
+import Navbar from "../components/NavBar"
 import Footer from "../components/Footer"
+import { AuthProvider } from '../contexts/AuthContext'
 
 const theme = createTheme({
     palette: {
@@ -56,29 +57,31 @@ const theme = createTheme({
 
 export default function RootLayout() {
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Box sx={{ 
-                minHeight: '100vh',
-                display: 'flex',
-                flexDirection: 'column',
-                bgcolor: 'background.default'
-            }}>
-                <Navbar />
-                <Container 
-                    maxWidth="lg" 
-                    sx={{ 
-                        flexGrow: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        px: { xs: 2, sm: 3 },
-                        pb: 4
-                    }}
-                >
-                    <Outlet />
-                </Container>
-                <Footer />
-            </Box>
-        </ThemeProvider>
+        <AuthProvider>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <Box sx={{ 
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    bgcolor: 'background.default'
+                }}>
+                    <Navbar />
+                    <Container 
+                        maxWidth="lg" 
+                        sx={{ 
+                            flexGrow: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            px: { xs: 2, sm: 3 },
+                            pb: 4
+                        }}
+                    >
+                        <Outlet />
+                    </Container>
+                    <Footer />
+                </Box>
+            </ThemeProvider>
+        </AuthProvider>
     )
 } 

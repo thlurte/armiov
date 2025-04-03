@@ -9,11 +9,24 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    Box,
+    Divider,
+    InputAdornment,
+    IconButton,
+    Tooltip,
+    Fade
 } from '@mui/material'
 import { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import EmailIcon from '@mui/icons-material/Email'
+import PhoneIcon from '@mui/icons-material/Phone'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import MaleIcon from '@mui/icons-material/Male'
+import FemaleIcon from '@mui/icons-material/Female'
+import TransgenderIcon from '@mui/icons-material/Transgender'
 import { Link } from 'react-router-dom'
 
 interface PatientRecord {
@@ -51,7 +64,6 @@ export default function PatientForm() {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        // Here you would send the data to your backend
         console.log(patientData);
     };
 
@@ -64,6 +76,17 @@ export default function PatientForm() {
         }));
     };
 
+    const getGenderIcon = (gender: string) => {
+        switch (gender) {
+            case 'Male':
+                return <MaleIcon />;
+            case 'Female':
+                return <FemaleIcon />;
+            default:
+                return <TransgenderIcon />;
+        }
+    };
+
     return (
         <Container maxWidth="lg">
             <Paper 
@@ -72,190 +95,325 @@ export default function PatientForm() {
                     p: 4,
                     borderRadius: 4,
                     bgcolor: 'background.paper',
-                    mb: 4
+                    mb: 4,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)'
                 }}
             >
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={4}>
                         {/* Header */}
-                        <Stack 
-                            direction="row" 
-                            alignItems="center" 
-                            spacing={2}
-                            sx={{ mb: 4 }}
-                        >
-                            <PersonAddIcon sx={{ fontSize: 32, color: 'primary.main' }} />
-                            <Typography variant="h4" component="h1">
-                                Patient Record
-                            </Typography>
-                        </Stack>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 2,
+                            mb: 4,
+                            background: 'linear-gradient(45deg, #1976d2 30%, #21CBF3 90%)',
+                            p: 3,
+                            borderRadius: 3,
+                            color: 'white'
+                        }}>
+                            <Box
+                                sx={{
+                                    width: 48,
+                                    height: 48,
+                                    borderRadius: '50%',
+                                    bgcolor: 'rgba(255,255,255,0.2)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <PersonAddIcon sx={{ fontSize: 24 }} />
+                            </Box>
+                            <Box>
+                                <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }}>
+                                    Patient Record
+                                </Typography>
+                                <Typography variant="body1" sx={{ opacity: 0.9 }}>
+                                    Enter patient information below
+                                </Typography>
+                            </Box>
+                        </Box>
 
                         {/* Personal Information */}
-                        <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                            Personal Information
-                        </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="First Name"
-                                    value={patientData.firstName}
-                                    onChange={handleChange('firstName')}
-                                />
+                        <Box>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: 'primary.main',
+                                    mb: 3,
+                                    fontWeight: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1
+                                }}
+                            >
+                                Personal Information
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="First Name"
+                                        value={patientData.firstName}
+                                        onChange={handleChange('firstName')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        required
+                                        label="Last Name"
+                                        value={patientData.lastName}
+                                        onChange={handleChange('lastName')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        type="date"
+                                        label="Date of Birth"
+                                        InputLabelProps={{ shrink: true }}
+                                        value={patientData.dateOfBirth}
+                                        onChange={handleChange('dateOfBirth')}
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <CalendarTodayIcon color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Gender</InputLabel>
+                                        <Select
+                                            value={patientData.gender}
+                                            label="Gender"
+                                            onChange={(e) => handleChange('gender')(e as any)}
+                                            startAdornment={
+                                                <InputAdornment position="start">
+                                                    {getGenderIcon(patientData.gender)}
+                                                </InputAdornment>
+                                            }
+                                            sx={{ borderRadius: 2 }}
+                                        >
+                                            <MenuItem value="Male">Male</MenuItem>
+                                            <MenuItem value="Female">Female</MenuItem>
+                                            <MenuItem value="Other">Other</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    label="Last Name"
-                                    value={patientData.lastName}
-                                    onChange={handleChange('lastName')}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    type="date"
-                                    label="Date of Birth"
-                                    InputLabelProps={{ shrink: true }}
-                                    value={patientData.dateOfBirth}
-                                    onChange={handleChange('dateOfBirth')}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth>
-                                    <InputLabel>Gender</InputLabel>
-                                    <Select
-                                        value={patientData.gender}
-                                        label="Gender"
-                                        onChange={(e) => handleChange('gender')(e as any)}
-                                    >
-                                        <MenuItem value="Male">Male</MenuItem>
-                                        <MenuItem value="Female">Female</MenuItem>
-                                        <MenuItem value="Other">Other</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
+                        </Box>
+
+                        <Divider />
 
                         {/* Contact Information */}
-                        <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                            Contact Information
-                        </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    label="Contact Number"
-                                    value={patientData.contactNumber}
-                                    onChange={handleChange('contactNumber')}
-                                />
+                        <Box>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: 'primary.main',
+                                    mb: 3,
+                                    fontWeight: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1
+                                }}
+                            >
+                                Contact Information
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        label="Contact Number"
+                                        value={patientData.contactNumber}
+                                        onChange={handleChange('contactNumber')}
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <PhoneIcon color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        type="email"
+                                        label="Email"
+                                        value={patientData.email}
+                                        onChange={handleChange('email')}
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <EmailIcon color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Address"
+                                        value={patientData.address}
+                                        onChange={handleChange('address')}
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <LocationOnIcon color="primary" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    type="email"
-                                    label="Email"
-                                    value={patientData.email}
-                                    onChange={handleChange('email')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Address"
-                                    value={patientData.address}
-                                    onChange={handleChange('address')}
-                                />
-                            </Grid>
-                        </Grid>
+                        </Box>
+
+                        <Divider />
 
                         {/* Medical Information */}
-                        <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                            Medical Information
-                        </Typography>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={4}
-                                    label="Medical History"
-                                    value={patientData.medicalHistory}
-                                    onChange={handleChange('medicalHistory')}
-                                />
+                        <Box>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: 'primary.main',
+                                    mb: 3,
+                                    fontWeight: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1
+                                }}
+                            >
+                                Medical Information
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        label="Medical History"
+                                        value={patientData.medicalHistory}
+                                        onChange={handleChange('medicalHistory')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Current Symptoms"
+                                        value={patientData.symptoms}
+                                        onChange={handleChange('symptoms')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Diagnosis"
+                                        value={patientData.diagnosis}
+                                        onChange={handleChange('diagnosis')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Treatment Plan"
+                                        value={patientData.treatmentPlan}
+                                        onChange={handleChange('treatmentPlan')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Test Results"
+                                        value={patientData.testResults}
+                                        onChange={handleChange('testResults')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Additional Notes"
+                                        value={patientData.notes}
+                                        onChange={handleChange('notes')}
+                                        variant="outlined"
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Current Symptoms"
-                                    value={patientData.symptoms}
-                                    onChange={handleChange('symptoms')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Diagnosis"
-                                    value={patientData.diagnosis}
-                                    onChange={handleChange('diagnosis')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Treatment Plan"
-                                    value={patientData.treatmentPlan}
-                                    onChange={handleChange('treatmentPlan')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Test Results"
-                                    value={patientData.testResults}
-                                    onChange={handleChange('testResults')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    rows={3}
-                                    label="Additional Notes"
-                                    value={patientData.notes}
-                                    onChange={handleChange('notes')}
-                                />
-                            </Grid>
-                        </Grid>
+                        </Box>
 
                         {/* Submit Button */}
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            size="large"
-                            startIcon={<SaveIcon />}
-                            sx={{ 
-                                mt: 4,
-                                py: 1.5,
-                                px: 4,
-                                borderRadius: 3,
-                                alignSelf: 'flex-end'
-                            }}
-                        >
-                            Save Patient Record
-                        </Button>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+                            <Tooltip 
+                                title="Save Patient Record" 
+                                TransitionComponent={Fade}
+                                TransitionProps={{ timeout: 600 }}
+                            >
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    size="large"
+                                    startIcon={<SaveIcon />}
+                                    sx={{ 
+                                        py: 1.5,
+                                        px: 4,
+                                        borderRadius: 3,
+                                        textTransform: 'none',
+                                        fontSize: '1.1rem',
+                                        background: 'linear-gradient(45deg, #1976d2 30%, #21CBF3 90%)',
+                                        boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
+                                        '&:hover': {
+                                            background: 'linear-gradient(45deg, #1565c0 30%, #1cb5e0 90%)',
+                                        }
+                                    }}
+                                >
+                                    Save Patient Record
+                                </Button>
+                            </Tooltip>
+                        </Box>
                     </Stack>
                 </form>
             </Paper>

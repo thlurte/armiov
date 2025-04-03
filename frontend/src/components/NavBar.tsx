@@ -1,12 +1,22 @@
 import { AppBar, Toolbar, Box, Button, Typography, Container } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ScienceIcon from '@mui/icons-material/Science'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import InfoIcon from '@mui/icons-material/Info'
 import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Navbar() {
+    const { isAuthenticated, logout } = useAuth()
+    const navigate = useNavigate()
+
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+
     return (
         <AppBar 
             position="static" 
@@ -49,7 +59,7 @@ export default function Navbar() {
                         }}
                     >
                         <ScienceIcon sx={{ fontSize: 32 }} />
-                        LeukemiaAI
+                        Arimov
                     </Typography>
 
                     <Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -69,22 +79,26 @@ export default function Navbar() {
                         >
                             Dashboard
                         </Button>
-                        <Button
-                            component={Link}
-                            to="/patients"
-                            variant="contained"
-                            startIcon={<ScienceIcon />}
-                            sx={{ 
-                                borderRadius: 3,
-                                px: 2.5,
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    transform: 'translateY(-2px)'
-                                }
-                            }}
-                        >
-                            Patients
-                        </Button>
+
+                        {isAuthenticated && (
+                            <Button
+                                component={Link}
+                                to="/patients"
+                                variant="contained"
+                                startIcon={<ScienceIcon />}
+                                sx={{ 
+                                    borderRadius: 3,
+                                    px: 2.5,
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)'
+                                    }
+                                }}
+                            >
+                                Patients
+                            </Button>
+                        )}
+
                         <Button
                             component={Link}
                             to="/about"
@@ -111,39 +125,59 @@ export default function Navbar() {
                             }} 
                         />
 
-                        {/* Auth Buttons */}
-                        <Button
-                            component={Link}
-                            to="/login"
-                            startIcon={<LoginIcon />}
-                            sx={{ 
-                                borderRadius: 3,
-                                px: 2.5,
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                                    transform: 'translateY(-2px)'
-                                }
-                            }}
-                        >
-                            Sign In
-                        </Button>
-                        <Button
-                            component={Link}
-                            to="/register"
-                            variant="outlined"
-                            startIcon={<PersonAddIcon />}
-                            sx={{ 
-                                borderRadius: 3,
-                                px: 2.5,
-                                transition: 'all 0.3s ease',
-                                '&:hover': {
-                                    transform: 'translateY(-2px)'
-                                }
-                            }}
-                        >
-                            Register
-                        </Button>
+                        {/* Conditional rendering of auth buttons */}
+                        {!isAuthenticated ? (
+                            <>
+                                <Button
+                                    component={Link}
+                                    to="/login"
+                                    startIcon={<LoginIcon />}
+                                    sx={{ 
+                                        borderRadius: 3,
+                                        px: 2.5,
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                                            transform: 'translateY(-2px)'
+                                        }
+                                    }}
+                                >
+                                    Sign In
+                                </Button>
+                                <Button
+                                    component={Link}
+                                    to="/register"
+                                    variant="outlined"
+                                    startIcon={<PersonAddIcon />}
+                                    sx={{ 
+                                        borderRadius: 3,
+                                        px: 2.5,
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            transform: 'translateY(-2px)'
+                                        }
+                                    }}
+                                >
+                                    Register
+                                </Button>
+                            </>
+                        ) : (
+                            <Button
+                                onClick={handleLogout}
+                                variant="outlined"
+                                startIcon={<LogoutIcon />}
+                                sx={{ 
+                                    borderRadius: 3,
+                                    px: 2.5,
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'translateY(-2px)'
+                                    }
+                                }}
+                            >
+                                Logout
+                            </Button>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
