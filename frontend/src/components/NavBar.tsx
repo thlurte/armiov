@@ -1,66 +1,83 @@
-import { AppBar, Toolbar, Typography, Button, Box, IconButton } from '@mui/material'
+import { AppBar, Toolbar, Box, Button, Typography, Container } from '@mui/material'
 import { Link } from 'react-router-dom'
 import ScienceIcon from '@mui/icons-material/Science'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import AssessmentIcon from '@mui/icons-material/Assessment'
 import InfoIcon from '@mui/icons-material/Info'
 
-export default function NavBar() {
+export default function Navbar() {
     return (
-        <AppBar position="static" color="primary" elevation={0}>
-            <Toolbar>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ScienceIcon sx={{ fontSize: 28 }} />
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 500 }}>
-                        LeukemiaAI
-                    </Typography>
-                </Box>
-                <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Button 
+        <AppBar 
+            position="static" 
+            elevation={0}
+            sx={{ 
+                backgroundColor: 'background.paper',
+                borderRadius: '0 0 24px 24px',
+                mb: 2
+            }}
+        >
+            <Container maxWidth="lg">
+                <Toolbar 
+                    sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        py: 2
+                    }}
+                >
+                    <Typography 
+                        variant="h5" 
                         component={Link} 
                         to="/" 
-                        color="inherit"
-                        startIcon={<DashboardIcon />}
                         sx={{ 
-                            '&:hover': { 
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                transform: 'translateY(-1px)'
-                            }
+                            color: 'primary.main',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1
                         }}
                     >
-                        Dashboard
-                    </Button>
-                    <Button 
-                        component={Link} 
-                        to="/analysis" 
-                        color="inherit"
-                        startIcon={<AssessmentIcon />}
-                        sx={{ 
-                            '&:hover': { 
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                transform: 'translateY(-1px)'
-                            }
-                        }}
-                    >
-                        Analysis
-                    </Button>
-                    <Button 
-                        component={Link} 
-                        to="/about" 
-                        color="inherit"
-                        startIcon={<InfoIcon />}
-                        sx={{ 
-                            '&:hover': { 
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                transform: 'translateY(-1px)'
-                            }
-                        }}
-                    >
-                        About
-                    </Button>
-                </Box>
-            </Toolbar>
+                        <ScienceIcon sx={{ fontSize: 32 }} />
+                        LeukemiaAI
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button
+                            component={Link}
+                            to="/"
+                            startIcon={<DashboardIcon />}
+                            sx={{ 
+                                borderRadius: 3,
+                                px: 3
+                            }}
+                        >
+                            Dashboard
+                        </Button>
+                        <Button
+                            component={Link}
+                            to="/analysis"
+                            variant="contained"
+                            startIcon={<ScienceIcon />}
+                            sx={{ 
+                                borderRadius: 3,
+                                px: 3
+                            }}
+                        >
+                            Analysis
+                        </Button>
+                        <Button
+                            component={Link}
+                            to="/about"
+                            startIcon={<InfoIcon />}
+                            sx={{ 
+                                borderRadius: 3,
+                                px: 3
+                            }}
+                        >
+                            About
+                        </Button>
+                    </Box>
+                </Toolbar>
+            </Container>
         </AppBar>
     )
 } 
