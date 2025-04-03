@@ -41,6 +41,7 @@ async def login(login_model: LoginUserModel):
         print(res.response()["result"]["user"]["id"])
         user_id = res.response()["result"]["user"]["id"]
         try:
+            pass
         except Exception as e:  # Exception handling for starting scheduler
             # Handle potential errors and log them
             print(f"Error starting scheduler for user {user_id}: {e}")
