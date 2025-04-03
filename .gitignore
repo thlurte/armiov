@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Dataset
+models/Leukemia-Cancer-Detection-1
+
 # Distribution / packaging
 .Python
 build/

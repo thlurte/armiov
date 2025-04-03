@@ -1,8 +1,8 @@
 import {Outlet} from "react-router-dom"
-import NavBar from "../components/NavBar"
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import { Box } from '@mui/material'
+import { Box, CssBaseline, Container } from '@mui/material'
+import Navbar from "../components/Navbar"
+import Footer from "../components/Footer"
 
 const theme = createTheme({
     palette: {
@@ -64,10 +64,20 @@ export default function RootLayout() {
                 flexDirection: 'column',
                 bgcolor: 'background.default'
             }}>
-                <NavBar/>
-                <Box component="main" sx={{ flexGrow: 1, py: 3 }}>
-                    <Outlet/>
-                </Box>
+                <Navbar />
+                <Container 
+                    maxWidth="lg" 
+                    sx={{ 
+                        flexGrow: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        px: { xs: 2, sm: 3 },
+                        pb: 4
+                    }}
+                >
+                    <Outlet />
+                </Container>
+                <Footer />
             </Box>
         </ThemeProvider>
     )
