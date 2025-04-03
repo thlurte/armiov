@@ -4,6 +4,7 @@ import ScienceIcon from '@mui/icons-material/Science'
 import AssessmentIcon from '@mui/icons-material/Assessment'
 import SpeedIcon from '@mui/icons-material/Speed'
 import SecurityIcon from '@mui/icons-material/Security'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 interface Feature {
     title: string
@@ -59,13 +60,29 @@ export default function Home() {
                 <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 8 }}>
                     <Button
                         component={Link}
-                        to="/analysis"
+                        to="/patients"
                         variant="contained"
                         size="large"
                         startIcon={<ScienceIcon />}
                         sx={{ borderRadius: 3 }}
                     >
                         Start Analysis
+                    </Button>
+                    <Button
+                        component={Link}
+                        to="/patient/new"
+                        variant="contained"
+                        size="large"
+                        startIcon={<PersonAddIcon />}
+                        sx={{ 
+                            borderRadius: 3,
+                            bgcolor: 'secondary.main',
+                            '&:hover': {
+                                bgcolor: 'secondary.dark'
+                            }
+                        }}
+                    >
+                        Add Patient
                     </Button>
                     <Button
                         component={Link}

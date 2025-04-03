@@ -71,7 +71,7 @@ export default function Navbar() {
                         </Button>
                         <Button
                             component={Link}
-                            to="/analysis"
+                            to="/patients"
                             variant="contained"
                             startIcon={<ScienceIcon />}
                             sx={{ 
@@ -83,7 +83,7 @@ export default function Navbar() {
                                 }
                             }}
                         >
-                            Analysis
+                            Patients
                         </Button>
                         <Button
                             component={Link}
