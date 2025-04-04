@@ -273,7 +273,7 @@ export default function Login() {
                             sx={{ mt: 2 }}
                         >
                             <Typography variant="body2">
-                                New to LeukemiaAI?{' '}
+                                New to Armiov?{' '}
                                 <MuiLink 
                                     component={Link} 
                                     to="/register"

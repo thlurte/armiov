@@ -38,7 +38,7 @@ export default function Footer() {
                             gap: 1
                         }}
                     >
-                        LeukemiaAI
+                        Armiov
                     </Typography>
                     <Stack 
                         direction="row" 

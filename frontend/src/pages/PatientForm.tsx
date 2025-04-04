@@ -15,7 +15,9 @@ import {
     InputAdornment,
     IconButton,
     Tooltip,
-    Fade
+    Fade,
+    Alert,
+    Snackbar
 } from '@mui/material'
 import { useState } from 'react'
 import SaveIcon from '@mui/icons-material/Save'
@@ -27,44 +29,69 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import MaleIcon from '@mui/icons-material/Male'
 import FemaleIcon from '@mui/icons-material/Female'
 import TransgenderIcon from '@mui/icons-material/Transgender'
-import { Link } from 'react-router-dom'
-
-interface PatientRecord {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    gender: string;
-    contactNumber: string;
-    email: string;
-    address: string;
-    medicalHistory: string;
-    symptoms: string;
-    diagnosis: string;
-    treatmentPlan: string;
-    testResults: string;
-    notes: string;
-}
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { patientService, PatientRecord } from '../services/patientService'
 
 export default function PatientForm() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
+
     const [patientData, setPatientData] = useState<PatientRecord>({
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
+        first_name: '',
+        last_name: '',
+        date_of_birth: '',
         gender: '',
-        contactNumber: '',
+        contact_number: '',
         email: '',
         address: '',
-        medicalHistory: '',
+        medical_history: '',
         symptoms: '',
         diagnosis: '',
-        treatmentPlan: '',
-        testResults: '',
+        treatment_plan: '',
+        test_results: '',
         notes: ''
     });
 
-    const handleSubmit = (event: React.FormEvent) => {
+    // Load patient data if editing
+    useState(() => {
+        if (id) {
+            const loadPatient = async () => {
+                try {
+                    const patient = await patientService.getPatient(Number(id));
+                    setPatientData(patient);
+                } catch (err) {
+                    setError('Failed to load patient data');
+                }
+            };
+            loadPatient();
+        }
+    }, [id]);
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log(patientData);
+        setLoading(true);
+        setError(null);
+        console.log('Patient data saved successfully');
+
+        try {
+            if (id) {
+                await patientService.updatePatient(Number(id), patientData);
+            } else {
+                await patientService.createPatient(patientData);
+            }
+            console.log('Patient data saved successfully');
+            setSuccess(true);
+            setTimeout(() => {
+                navigate('/patients');
+            }, 2000);
+        } catch (err) {
+            setError('Failed to save patient data');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleChange = (field: keyof PatientRecord) => (
@@ -129,10 +156,10 @@ export default function PatientForm() {
                             </Box>
                             <Box>
                                 <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }}>
-                                    Patient Record
+                                    {id ? 'Edit Patient Record' : 'New Patient Record'}
                                 </Typography>
                                 <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                                    Enter patient information below
+                                    {id ? 'Update patient information below' : 'Enter patient information below'}
                                 </Typography>
                             </Box>
                         </Box>
@@ -158,8 +185,8 @@ export default function PatientForm() {
                                         fullWidth
                                         required
                                         label="First Name"
-                                        value={patientData.firstName}
-                                        onChange={handleChange('firstName')}
+                                        value={patientData.first_name}
+                                        onChange={handleChange('first_name')}
                                         variant="outlined"
                                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                                     />
@@ -169,8 +196,8 @@ export default function PatientForm() {
                                         fullWidth
                                         required
                                         label="Last Name"
-                                        value={patientData.lastName}
-                                        onChange={handleChange('lastName')}
+                                        value={patientData.last_name}
+                                        onChange={handleChange('last_name')}
                                         variant="outlined"
                                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                                     />
@@ -181,8 +208,8 @@ export default function PatientForm() {
                                         type="date"
                                         label="Date of Birth"
                                         InputLabelProps={{ shrink: true }}
-                                        value={patientData.dateOfBirth}
-                                        onChange={handleChange('dateOfBirth')}
+                                        value={patientData.date_of_birth}
+                                        onChange={handleChange('date_of_birth')}
                                         variant="outlined"
                                         InputProps={{
                                             startAdornment: (
@@ -239,8 +266,8 @@ export default function PatientForm() {
                                     <TextField
                                         fullWidth
                                         label="Contact Number"
-                                        value={patientData.contactNumber}
-                                        onChange={handleChange('contactNumber')}
+                                        value={patientData.contact_number}
+                                        onChange={handleChange('contact_number')}
                                         variant="outlined"
                                         InputProps={{
                                             startAdornment: (
@@ -316,8 +343,8 @@ export default function PatientForm() {
                                         multiline
                                         rows={4}
                                         label="Medical History"
-                                        value={patientData.medicalHistory}
-                                        onChange={handleChange('medicalHistory')}
+                                        value={patientData.medical_history}
+                                        onChange={handleChange('medical_history')}
                                         variant="outlined"
                                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                                     />
@@ -352,8 +379,8 @@ export default function PatientForm() {
                                         multiline
                                         rows={3}
                                         label="Treatment Plan"
-                                        value={patientData.treatmentPlan}
-                                        onChange={handleChange('treatmentPlan')}
+                                        value={patientData.treatment_plan}
+                                        onChange={handleChange('treatment_plan')}
                                         variant="outlined"
                                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                                     />
@@ -364,8 +391,8 @@ export default function PatientForm() {
                                         multiline
                                         rows={3}
                                         label="Test Results"
-                                        value={patientData.testResults}
-                                        onChange={handleChange('testResults')}
+                                        value={patientData.test_results}
+                                        onChange={handleChange('test_results')}
                                         variant="outlined"
                                         sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                                     />
@@ -388,7 +415,7 @@ export default function PatientForm() {
                         {/* Submit Button */}
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
                             <Tooltip 
-                                title="Save Patient Record" 
+                                title={id ? "Update Patient Record" : "Save Patient Record"} 
                                 TransitionComponent={Fade}
                                 TransitionProps={{ timeout: 600 }}
                             >
@@ -397,6 +424,7 @@ export default function PatientForm() {
                                     variant="contained"
                                     size="large"
                                     startIcon={<SaveIcon />}
+                                    disabled={loading}
                                     sx={{ 
                                         py: 1.5,
                                         px: 4,
@@ -410,13 +438,37 @@ export default function PatientForm() {
                                         }
                                     }}
                                 >
-                                    Save Patient Record
+                                    {loading ? 'Saving...' : (id ? 'Update Patient Record' : 'Save Patient Record')}
                                 </Button>
                             </Tooltip>
                         </Box>
                     </Stack>
                 </form>
             </Paper>
+
+            {/* Error Snackbar */}
+            <Snackbar 
+                open={!!error} 
+                autoHideDuration={6000} 
+                onClose={() => setError(null)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={() => setError(null)} severity="error" sx={{ width: '100%' }}>
+                    {error}
+                </Alert>
+            </Snackbar>
+
+            {/* Success Snackbar */}
+            <Snackbar 
+                open={success} 
+                autoHideDuration={2000} 
+                onClose={() => setSuccess(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={() => setSuccess(false)} severity="success" sx={{ width: '100%' }}>
+                    Patient record {id ? 'updated' : 'created'} successfully!
+                </Alert>
+            </Snackbar>
         </Container>
     );
 } 
